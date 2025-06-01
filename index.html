@@ -22,12 +22,25 @@
         .option-button {
             transition: background-color 0.3s, border-color 0.3s;
         }
+        .all-questions-list {
+            max-height: 70vh; /* Setează o înălțime maximă */
+            overflow-y: auto; /* Adaugă scroll vertical dacă este necesar */
+        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
 
     <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-2xl">
         <h1 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-6">Test Grilă Interactiv</h1>
+
+        <div class="my-4 text-center space-x-2">
+            <button id="show-all-button" class="bg-purple-500 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-purple-300">
+                Vezi Toate Întrebările
+            </button>
+            <button id="back-to-quiz-button" class="bg-gray-500 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-gray-300" style="display: none;">
+                Înapoi la Quiz
+            </button>
+        </div>
         
         <div id="quiz-container">
             </div>
@@ -46,358 +59,542 @@
     <script>
         // Datele pentru quiz
         let quizData = [ 
+            // ... (toate cele 80+ de întrebări definite anterior sunt aici) ...
             // Setul 1 de întrebări
             {
                 question: "Pentru lansarea unei activități se apelează metoda:",
-                options: [
-                    "startActivity()",
-                    "displayActivity()",
-                    "showActivity()",
-                    "show()",
-                    "activityShow()"
-                ],
-                correctAnswer: "startActivity()",
-                userAnswer: null, 
-                answered: false 
+                options: ["startActivity()", "displayActivity()", "showActivity()", "show()", "activityShow()"],
+                correctAnswer: "startActivity()", userAnswer: null, answered: false 
             },
             {
                 question: "Asemănător mesajelor de notificare de tip Toast sunt obiectele de tip:",
-                options: [
-                    "Snackbar",
-                    "SnackMenu",
-                    "ToastBar",
-                    "Activity",
-                    "ToastWidget"
-                ],
-                correctAnswer: "Snackbar",
-                userAnswer: null,
-                answered: false
+                options: ["Snackbar", "SnackMenu", "ToastBar", "Activity", "ToastWidget"],
+                correctAnswer: "Snackbar", userAnswer: null, answered: false
             },
             {
                 question: "Android Wear suportă următorul API:",
-                options: [
-                    "android.print",
-                    "android.bluetooth",
-                    "android.app.backup",
-                    "android.webkit",
-                    "android.appwidget"
-                ],
-                correctAnswer: "android.bluetooth",
-                userAnswer: null,
-                answered: false
+                options: ["android.print", "android.bluetooth", "android.app.backup", "android.webkit", "android.appwidget"],
+                correctAnswer: "android.bluetooth", userAnswer: null, answered: false
             },
             // Setul 2 de întrebări
             {
                 question: "Selectia unui Contact prin intermediul unui obiect de tip Intent se realizeaza prin intermediul actiunii:",
                 options: ["ACTION_SELECT", "ACTION_CHOOSE", "ACTION_EDIT", "ACTION_PICK", "ACTION_VIEW"],
-                correctAnswer: "ACTION_PICK",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "ACTION_PICK", userAnswer: null, answered: false
             },
             {
                 question: "Pentru afisarea unui mesaj de informare pentru o durata determinata se utilizeaza clasa:",
                 options: ["Toast", "TimePickerDialog", "ProgressDialog", "AlertDialog", "Dialog"],
-                correctAnswer: "Toast",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Toast", userAnswer: null, answered: false
             },
             {
                 question: "Tratarea evenimentului Click pt un obiect de tip View se realizeaza prin:",
                 options: ["Implementarea interfetei View.OnTouchListener", "Implementarea interfetei View.OnClickListener", "Implementarea interfetei View.OnKeyListener", "Includerea in fisierul XML a atributului android:onClick si implementarea metodei declarate in fisierul sursa", "Dialog"],
-                correctAnswer: "Implementarea interfetei View.OnClickListener",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Implementarea interfetei View.OnClickListener", userAnswer: null, answered: false
             },
             {
                 question: "Captarea imaginilor se realizeaza prin intermediul clasei:",
                 options: ["ImageRecorder", "ImageCapture", "CameraUpdate", "Camera", "MediaRecorder"],
-                correctAnswer: "Camera",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Camera", userAnswer: null, answered: false
             },
             {
                 question: "Pentru desenarea folosind gradienti se utilizeaza:",
                 options: ["Clasa Bitmap", "Clasa Color", "Clasa Gradient", "Clasele derivate din clasa Shader", "Un vector de obiecte de tip Color"],
-                correctAnswer: "Clasele derivate din clasa Shader",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Clasele derivate din clasa Shader", userAnswer: null, answered: false
             },
             {
                 question: "Care dintre urmatoarele denumiri NU este valida pentru un fisier de resurse:",
                 options: ["Layout_activitate_1.xml", "Layout_activitate1.xml", "Layout_activitate.xml", "layoutActivitate.xml", "layoutactivitate.xml"],
-                correctAnswer: "Layout_activitate1.xml", 
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Layout_activitate1.xml", userAnswer: null, answered: false
             },
             {
                 question: "Obtinerea unei referinte la un fisier asociat directorului de date extern al aplicatiei se realizeaza cu metoda:",
                 options: ["getExternalStorageState()", "getFilesDir()", "getExternalStoragePublicDirectory()", "getExternalFilesDir()", "getRootDirectory()"],
-                correctAnswer: "getExternalFilesDir()",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "getExternalFilesDir()", userAnswer: null, answered: false
             },
             {
                 question: "GridView este un:",
                 options: ["Container dedicat pt afisarea imaginilor", "Container utilizat pt afisarea tabelara a continutului", "Control dedicat utilizat pt afisarea imaginilor", "Control utilizat pt afisarea tabelara a continutului", "Nu exista aceasta clasa"],
-                correctAnswer: "Control utilizat pt afisarea tabelara a continutului", 
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Control utilizat pt afisarea tabelara a continutului", userAnswer: null, answered: false
             },
             {
                 question: "Pt obtinerea coordonatelor de la retele (Wifi, mobile etc.) este necesara permisiunea android.permission ... :",
                 options: ["ACCES_FINE_LOCATION", "ACCES_LOCATION", "READ_NETWORK_LOCATION", "ACCESS_NETWORK_LOCATION", "ACCESS_COARSE_LOCATION"],
-                correctAnswer: "ACCESS_COARSE_LOCATION",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "ACCESS_COARSE_LOCATION", userAnswer: null, answered: false
             },
             {
                 question: "Interfata grafica:",
                 options: ["Se implementeaza doar prin fisiere XML", "Se implementeaza doar in limbajul C++", "Se implementeaza doar cu editorul vizual dedicat", "Se implementeaza doar prin cod", "Se implementeaza atat prin cod cat si prin fisiere XML"],
-                correctAnswer: "Se implementeaza atat prin cod cat si prin fisiere XML",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Se implementeaza atat prin cod cat si prin fisiere XML", userAnswer: null, answered: false
             },
             // Setul 3 de întrebări
             {
                 question: "Transmiterea unui mesaj global cu prioritate se realizeaza cu metoda:",
                 options: ["sendBroadcast()", "sendPriorityBroadcast()", "sendOrderedIntent()", "sendOrderedBroadcast()", "sendPriorityIntent"],
-                correctAnswer: "sendOrderedBroadcast()",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "sendOrderedBroadcast()", userAnswer: null, answered: false
             },
             {
                 question: "Pentru accesul la retea este necesara includerea permisiunii:",
                 options: ["CALL_PHONE", "INTERNET", "EHTERNET", "NETWORK", "WIFI"],
-                correctAnswer: "INTERNET",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "INTERNET", userAnswer: null, answered: false
             },
             {
                 question: "Se considera o activitate care include fragmentul A. Acesta este inlocuit cu fragmentul B printr-o tranzactie. Care este comportamentul la apasarea tastei Back:",
-                options: [
-                    "Se revine la fragmentul A daca a fost apelata metoda addToBackStack() inainte de comiterea tranzactiei",
-                    "Se revine tot timpul la fragmentul A",
-                    "Se revine tot timpul la activitatea anterioara",
-                    "Se revine la fragmentul A daca a fost apelata metoda startActivity() inainte de comiterea tranzactiei",
-                    "Fragmentul B ramane afisat in permanenta"
-                ],
-                correctAnswer: "Se revine la fragmentul A daca a fost apelata metoda addToBackStack() inainte de comiterea tranzactiei",
-                userAnswer: null,
-                answered: false
+                options: ["Se revine la fragmentul A daca a fost apelata metoda addToBackStack() inainte de comiterea tranzactiei", "Se revine tot timpul la fragmentul A", "Se revine tot timpul la activitatea anterioara", "Se revine la fragmentul A daca a fost apelata metoda startActivity() inainte de comiterea tranzactiei", "Fragmentul B ramane afisat in permanenta"],
+                correctAnswer: "Se revine la fragmentul A daca a fost apelata metoda addToBackStack() inainte de comiterea tranzactiei", userAnswer: null, answered: false
             },
             {
                 question: "Orice activitate trebuie declarata si in fisierul:",
                 options: ["XML asociat din directorul res/menu", "Java asociat din directorul gen", "AndroidManifest.xml", "XML asociat din directorul res/layout", "XML asociat din directorul res/drawable"],
-                correctAnswer: "AndroidManifest.xml",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "AndroidManifest.xml", userAnswer: null, answered: false
             },
             {
                 question: "Pentru desenarea unei linii se apeleaza metoda drawLine() din clasa:",
                 options: ["Paint", "Canvas", "Color", "Path", "Shader"],
-                correctAnswer: "Canvas",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Canvas", userAnswer: null, answered: false
             },
             {
                 question: "Pentru selectia unor inregistrari dintr-o tabela SQLite se poate utiliza una din metodele din clasa SQLiteDatabase:",
                 options: ["execSql() sau query()", "execSql() sau select()", "rawQuery() sau query()", "rawSelect() sau select()", "rawQuery() sau select()"],
-                correctAnswer: "rawQuery() sau query()",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "rawQuery() sau query()", userAnswer: null, answered: false
             },
             {
                 question: "Pentru partajarea datelor intre aplicatii se implementeaza o clasa derivata din ContentProvider. Care metoda NU este specifica acesteia:",
                 options: ["Update()", "Query()", "Insert()", "Delete()", "Erase()"],
-                correctAnswer: "Erase()",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Erase()", userAnswer: null, answered: false
             },
             {
                 question: "Pentru deschiderea navigatorului Web se initializeaza un Intent cu actiunea:",
                 options: ["ACTION_DIAL", "ACTION_CALL", "ACTION_VIEW", "ACTION_EDIT", "ACTION_PICK"],
-                correctAnswer: "ACTION_VIEW",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "ACTION_VIEW", userAnswer: null, answered: false
             },
-            {
-                question: "Serviciile locale sunt initializate prin metoda:", // Q19 from image 19.png
-                options: ["bindService()", "startService()", "start()", "bind()", "startSelf()"],
-                correctAnswer: "start()", 
-                userAnswer: null,
-                answered: false
+            { 
+                question: "Serviciile locale sunt initializate prin metoda:",
+                options: ["startSelf()", "startService()", "start()", "bind()", "bindService()"],
+                correctAnswer: "startService()", 
+                userAnswer: null, answered: false
             },
             {
                 question: "Pentru detectarea miscarii dispozitivului mobil pe cele 3 axe se utilizeaza senzorul de tip:",
                 options: ["Proximitate", "GPS (Global Positioning System)", "Accelerometru", "Ambiental", "Magnetometru (busola)"],
-                correctAnswer: "Accelerometru",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Accelerometru", userAnswer: null, answered: false
             },
             // Setul 4 de întrebări
             {
                 question: "Clasa FragmentTransaction este responsabila cu:",
                 options: ["Interactiunea cu fragmentele in cadrul activitatilor", "Operatii de fragmentare (adaugare, stergere, inlocuire)", "Gestionarea fragmentelor din cadrul activitatilor", "Efecte de animatie in trecerea la un nou fragment", "Definirea fragmentelor (clasa de baza pt fragmente)"],
-                correctAnswer: "Operatii de fragmentare (adaugare, stergere, inlocuire)",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Operatii de fragmentare (adaugare, stergere, inlocuire)", userAnswer: null, answered: false
             },
             {
                 question: "In timpul ciclului de viata al unei activitati, prima metoda asociata este:",
                 options: ["onInit()", "onStart()", "onResume()", "onRestart()", "onCreate()"],
-                correctAnswer: "onCreate()",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "onCreate()", userAnswer: null, answered: false
             },
             {
                 question: "Inserarea unei inregistrari intr-o tabela dintr-o baza de date SQLiteDatabase se realizeaza prin apelul:",
                 options: ["Metodei insert() sau al metodei execSQL()", "Doar al metodei insert()", "Metodei insert() sau al metodei rawQuery()", "Doar al metodei rawQuery()", "Doar al metodei execSQL()"],
-                correctAnswer: "Metodei insert() sau al metodei execSQL()",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Metodei insert() sau al metodei execSQL()", userAnswer: null, answered: false
             },
             {
                 question: "Accesul la activitatile personale programate (calendar) se realizeaza prin clasa:",
                 options: ["Contacts", "CalendarContract", "Calendar", "ContactsCalendar", "Activity"],
-                correctAnswer: "CalendarContract",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "CalendarContract", userAnswer: null, answered: false
             },
             {
                 question: "In directorul ... asociat pachetului aplicatiei, fisierele pot fi organizate in directoare",
                 options: ["res/layout", "res/raw", "res/xml", "assets", "res/drawable"],
-                correctAnswer: "assets",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "assets", userAnswer: null, answered: false
             },
             {
                 question: "Aplicatiile de tip Widget NU:",
                 options: ["Ruleaza in procesul aplicatiei gazda", "Folosesc obiecte de tip RemoteView pt afisarea utilizator", "Sunt aplicatii de sine statatoare", "Include ferestre care sunt atasate ecranului", "Nu pot fi dezvoltate de programatori independenti, ci sunt doar aplicatii de sistem"],
-                correctAnswer: "Sunt aplicatii de sine statatoare",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Sunt aplicatii de sine statatoare", userAnswer: null, answered: false
             },
             {
                 question: "In fisierele XML din directorul res/layout componentele vizuale au obligatoriu proprietatile:",
                 options: ["Android:id, android:width, android:height", "Android:id si android:layout_gravity", "Android:layout_width si android:layout_height", "Android:height si android:width", "Android:id, android:layout_width si android:layout_height"],
-                correctAnswer: "Android:layout_width si android:layout_height",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Android:layout_width si android:layout_height", userAnswer: null, answered: false
             },
             {
                 question: "Pentru descarcarea fisierelor se poate utiliza serviciul de sistem:",
                 options: ["Download", "downloadManager", "downloadMaster", "downloadService", "downloadSystem"],
-                correctAnswer: "downloadManager",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "downloadManager", userAnswer: null, answered: false
             },
             {
                 question: "Proprietatile unui control NU pot fi modificate prin:",
                 options: ["Intermediul parametrului metodei postDelayed(Runnable, long) din clasa View", "Metoda run() din clasa Thread", "Intermediul parametrului metodei post(Runnable) din clasa View", "Metoda postExecute(...) din clasa AsyncTask", "Intermediul parametrului metodei runOnUiThread(Runnable) din clasa Activity"],
-                correctAnswer: "Metoda run() din clasa Thread",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Metoda run() din clasa Thread", userAnswer: null, answered: false
             },
             {
                 question: "Pentru ocuparea intregului spatiu ramas liber de 3 controale de tip TextView dintr-un container de tip LinearLayout, acestea necesita includerea atributului:",
                 options: ["Gravity, cu valoarea 1 pt fiecare control", "Layout_width, cu valoarea 1 pt fiecare control", "Layout_weight, cu valoarea 1 pt fiecare control", "Layout_height, cu valoarea 1 pt fiecare control", "Layout_gravity, cu valoarea 1 pt fiecare control"],
-                correctAnswer: "Layout_weight, cu valoarea 1 pt fiecare control",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Layout_weight, cu valoarea 1 pt fiecare control", userAnswer: null, answered: false
             },
             // Setul 5 de întrebări (din imagini 31.png - 40.png)
             {
                 question: "Clasa Handler se utilizeaza:",
                 options: ["Pt transmiterea si prelucrarea fisierelor prin intermediul identificatorilor acestora", "Pt transmiterea si prelucrarea de obiecte de tip Thread", "Pt transmiterea si prelucrarea bazelor de date prin intermediul identificatorilor acestora", "Pt transmiterea si prelucrarea de obiecte de tip Message si Runnable"],
-                correctAnswer: "Pt transmiterea si prelucrarea de obiecte de tip Message si Runnable",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Pt transmiterea si prelucrarea de obiecte de tip Message si Runnable", userAnswer: null, answered: false
             },
             {
                 question: "Pentru afisarea pictogramei asociate, optiunile de meniu trebuie sa includa atributul android:", // Q32
                 options: ["Icon si sa fie afisate in bara de actiune", "Drawable", "Icon", "Drawable si sa fie afisate in bara de actiune", "Image"],
-                correctAnswer: "Icon si sa fie afisate in bara de actiune",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Icon si sa fie afisate in bara de actiune", userAnswer: null, answered: false
             },
             {
                 question: "Activitatile, derivate din clasa Activity, sunt:", // Q33
                 options: ["Utilizate pt tratarea evenimentelor", "Asociate ferestrelor aplicatiilor Android", "Asemanatoare evenimentelor", "Componente vizuale de tip View"],
-                correctAnswer: "Asociate ferestrelor aplicatiilor Android",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Asociate ferestrelor aplicatiilor Android", userAnswer: null, answered: false
             },
             {
                 question: "Uzual, pt afisarea unei singure componente vizuale la un moment dat, se utilizeaza containerul:", // Q34
                 options: ["FrameLayout", "LinearLayout", "RelativeLayout", "TableLayout", "GridLayout"],
-                correctAnswer: "FrameLayout",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "FrameLayout", userAnswer: null, answered: false
             },
             {
                 question: "Aplicatiile Android sunt:", // Q35
                 options: ["Aplicatii Java compatibile Java SE", "Aplicatii Java incompatibile cu Java SE", "Aplicatii Java compatibile Windows", "Aplicatii Java compatibile Java EE", "Aplicatii C++ incompatibile Java"],
                 correctAnswer: "Aplicatii Java compatibile Java SE", 
-                userAnswer: null,
-                answered: false
+                userAnswer: null, answered: false
             },
             {
                 question: "Accesul la informatiile personale (contacte si calendar) se realizeaza prin intermediul:", // Q36
                 options: ["Unor clase dedicate, implementate specific", "Colectiilor dinamice de date", "Furnizorilor de continut", "Fisierelor", "Bazelor de date"],
-                correctAnswer: "Furnizorilor de continut",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Furnizorilor de continut", userAnswer: null, answered: false
             },
-            {
-                question: "Serviciile locale sunt initializate prin metoda:", // Q37 from image 37.png
+            { // Q37 from image 37.png
+                question: "Serviciile locale sunt initializate prin metoda:", 
                 options: ["bindService()", "bind()", "MailShell()", "Start()", "startService()"],
-                correctAnswer: "bindService()", // Am actualizat conform imaginii 37.png
-                userAnswer: null,
-                answered: false
+                correctAnswer: "bindService()", 
+                userAnswer: null, answered: false
             },
             {
                 question: "In cadrul oricarei metode dintr-o clasa derivata din clasa Activity, this poate fi utilizat pt tipul:", // Q38
                 options: ["Context", "Intent", "Application", "ViewGroup", "View"],
-                correctAnswer: "Context",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Context", userAnswer: null, answered: false
             },
             {
                 question: "In cod, pt initializarea unei componente vizuale definita in fisierul XML, se foloseste metoda:", // Q39
                 options: ["getViewById()", "findViewById()", "findViewByName()", "findControlByName()", "findControlById()"],
-                correctAnswer: "findViewById()",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "findViewById()", userAnswer: null, answered: false
             },
             {
                 question: "Pt restaurarea starii unei activitati se foloseste parametrul de tip Bundle din:", // Q40
                 options: ["Metoda onRestoreInstanceState()", "Metoda onCreate() sau onSaveinstanceState()", "Metoda onCreate() sau onRestoreInstanceState()", "Metoda onSaveInstanceState()", "Metoda onCreate()"],
-                correctAnswer: "Metoda onCreate() sau onRestoreInstanceState()",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Metoda onCreate() sau onRestoreInstanceState()", userAnswer: null, answered: false
             },
             // Ultimele 2 întrebări (din imagini 41.png, 42.png)
             {
                 question: "Ferestrele de tip AlertDialog sunt create:", // Q41
                 options: ["Prin intermediul clasei AlertDialog.Builder", "Prin intermediul metodei statice getInstance() din clasa AlertDialog", "Nu executa astfel de ferestre", "Direct prin constructorul clasei", "Prin intermediul clasei DialogBuilder"],
-                correctAnswer: "Prin intermediul clasei AlertDialog.Builder",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "Prin intermediul clasei AlertDialog.Builder", userAnswer: null, answered: false
             },
             {
                 question: "Rezultatul selectiei dintr-o activitate poate fi preluat in activitatea sursa in metoda in apel invers:", // Q42
                 options: ["onActivityResult()", "onActivityResume()", "onUpdated()", "onReceived()", "onStart()"],
-                correctAnswer: "onActivityResult()",
-                userAnswer: null,
-                answered: false
+                correctAnswer: "onActivityResult()", userAnswer: null, answered: false
+            },
+            // Întrebări noi extrase din Grile.pdf (Android - primele)
+            {
+                question: "Afişarea elementelor sub forma unei liste se realizează prin intermediul unui controlul de tip:",
+                options: ["CollectionView", "List", "RecyclerView", "ListView", "Grid"],
+                correctAnswer: "ListView", userAnswer: null, answered: false
+            },
+            {
+                question: "O funcție asincronă include cel puţin un apel precedat de operatorul:",
+                options: ["delete", "new", "async", "call", "await"],
+                correctAnswer: "await", userAnswer: null, answered: false
+            },
+            {
+                question: "Proprietatea ataşabilă Row este utilizată de componenta de tip:",
+                options: ["TableView", "StackLayout", "TableLayout", "Grid"],
+                correctAnswer: "Grid", userAnswer: null, answered: false
+            },
+            {
+                question: "Containerul de tip StackLayout poziţionează controalele în mod implicit pe:",
+                options: ["verticală", "orizontală", "diagonală", "de jos în sus", "de la dreapta la stinga"],
+                correctAnswer: "verticală", userAnswer: null, answered: false
+            },
+            {
+                question: "În cadrul unei pagini cu meniu derulant, proprietatea asociată meniului este:",
+                options: ["Flyout.Drawer", "Flyout.Menu", "FlyoutPage.Flyout", "FlyoutPage.Detail"],
+                correctAnswer: "FlyoutPage.Flyout", userAnswer: null, answered: false
+            },
+            {
+                question: "Proprietatea x:Name se utilizează pentru:",
+                options: ["numele clasei asociate", "referirea fişierului XAML", "referirea resurselor din dicţionare", "referirea numelui utilizatorului", "referirea controalelor în cadrul fişierului sursă"],
+                correctAnswer: "referirea controalelor în cadrul fişierului sursă", userAnswer: null, answered: false
+            },
+             {
+                question: "Dimensiunile unei componente vizuale sunt controlate prin intermediul proprietăților:",
+                options: ["MinWidth şi MinHeight", "layout_width şi layout_height", "WidthRequest și HeightRequest", "Width şi Height"],
+                correctAnswer: "WidthRequest și HeightRequest", userAnswer: null, answered: false
+            },
+            {
+                question: "Proprietatea Content nu este implicită pentru componenta de tip:",
+                options: ["Label", "ContentPage", "Frame", "ContentView", "ScrollView"],
+                correctAnswer: "Label", userAnswer: null, answered: false
+            },
+            {
+                question: "În cadrul containerului de tip Grid, pentru ocuparea mai multor coloane de către un control se utilizează proprietatea:",
+                options: ["ColumnSpace", "Columns", "Column", "ColumnSpan", "Row"],
+                correctAnswer: "ColumnSpan", userAnswer: null, answered: false
+            },
+            {
+                question: "Prototipul unei funcţii care include apeluri asincrone este adnotat cu ajutorul operatorului:",
+                options: ["async", "await", "synchronized", "sync", "new"],
+                correctAnswer: "async", userAnswer: null, answered: false
+            },
+            {
+                question: "Proprietatea este utilizată pentru inițializarea paginii principale a unei aplicații Xamarin.Forms /.NET MAUI:",
+                options: ["Main", "FirstPage", "MainPage", "Page"],
+                correctAnswer: "MainPage", userAnswer: null, answered: false
+            },
+            {
+                question: "Pentru o aplicație care include o pagină cu selectori se utilizează clasa:",
+                options: ["Carousel Page", "FlyoutPage", "NavigationPage", "TabbedPage", "ContentPage"],
+                correctAnswer: "TabbedPage", userAnswer: null, answered: false
+            },
+            {
+                question: "În fişeriul XAML, pentru asocierea dinamică a valorii unei proprietăți unui obiect din cod, unei proprietăți aparţinînd unui control, se utilizează:",
+                options: ["extensia Dynamic", "extensia DLL", "extensia Binding", "valori constante"],
+                correctAnswer: "extensia Binding", userAnswer: null, answered: false
+            },
+            {
+                question: "Containerul de tip ScrollView permite derularea:",
+                options: ["pe verticală", "pe orizontală", "pe diagonală", "doar pe verticală", "nu există un astfel de container"],
+                correctAnswer: "pe verticală", userAnswer: null, answered: false 
+            },
+            {
+                question: "Pentru a include GoogleMaps în aplicații se utilizează interfața de programare a aplicațiilor:",
+                options: ["nu este necesară nici o bibliotecă suplimentară", "Here Maps", "Google Earth", "Google Play services", "Bing Maps"],
+                correctAnswer: "Google Play services", userAnswer: null, answered: false
+            },
+            {
+                question: "Înregistrarea unui senzor, în vederea recepţionării datelor furnizate de acesta, se realizează cu metoda:",
+                options: ["registerReceiver()", "unregisterSensor()", "unregisterListener()", "registerSensor()", "registerListener()"],
+                correctAnswer: "registerListener()", userAnswer: null, answered: false
+            },
+            {
+                question: "Serviciul pentru determinarea poziției geografice este accesat printr-un obiect de tip:",
+                options: ["GoogleMaps", "LocationService", "MapFragment", "PositionManager", "Location Manager"],
+                correctAnswer: "Location Manager", userAnswer: null, answered: false
+            },
+            {
+                question: "Implementarea unui meniu glisant se realizează prin intermediul claselor",
+                options: ["SlidingView și SlidingMenu", "Menu şi DrawerLayout", "ListView şi NavigationView", "DrawerLayout și ContextMenu", "DrawerLayout și NavigationView"],
+                correctAnswer: "DrawerLayout și NavigationView", userAnswer: null, answered: false
+            },
+            {
+                question: "Pentru afişarea unui buton flotant se utilizează controlul:",
+                options: ["FloatingButton", "FloatingActionButton", "Floating CircleButton", "DoubleFloatingActionButton", "FlyingActionButton"],
+                correctAnswer: "FloatingActionButton", userAnswer: null, answered: false
+            },
+            {
+                question: "Definirea unui membru, care poate fi accesat direct prin intermediul clasei (similar static în Java), într-o clasă Kotlin se realizează în cadrul unui bloc de tip:",
+                options: ["companion static", "companion object", "object companion", "static", "static object"],
+                correctAnswer: "companion object", userAnswer: null, answered: false
+            },
+            { 
+                question: "Pentru invocarea unei activități se apelează metoda din clasa Context:",
+                options: ["startActivity()", "showActivity()", "activityShow()", "displayActivity()", "show()"],
+                correctAnswer: "startActivity()", userAnswer: null, answered: false
+            },
+            {
+                question: "Accesul la furnizorii de conținut se realizează prin intermediul clasei:",
+                options: ["ContentResolver", "ContentProvider", "ContentAccesor", "BroadcastReceiver", "DataProvider"],
+                correctAnswer: "ContentResolver", userAnswer: null, answered: false
+            },
+            {
+                question: "In momentul recepţionării unui mesaj în cadrul unui obiect de tip BroadcastReceiver se va apela metoda",
+                options: ["onStart()", "onReceive()", "onIntentReceived()", "onMessageReceived()", "onUpdate()"],
+                correctAnswer: "onReceive()", userAnswer: null, answered: false
+            },
+            {
+                question: "Pentru a obține informații despre un anumit senzor se utilizează un obiect de tipul:",
+                options: ["SensorInformation", "SensorManager", "SensorBuilder", "Sensor", "SensorListener"],
+                correctAnswer: "Sensor", userAnswer: null, answered: false
+            },
+            {
+                question: "Actualizarea interfeței utilizator a unei aplicații de tip Widget se realizează în cadrul unui obiect de tip:",
+                options: ["BroadcastReceiver", "Activity", "ContentProvider", "Service", "RemoteViews"],
+                correctAnswer: "BroadcastReceiver", userAnswer: null, answered: false
+            },
+            {
+                question: "În aplicaţiile Android, pot fi apelate funcții scrise in limbajul C/C++:",
+                options: ["da, fără nici o restricție", "da, doar din servicii", "nu, doar funcții scrise în limbajul C#", "da, doar din activităţi", "da, doar prin intermediul JNI şi NDK"],
+                correctAnswer: "da, doar prin intermediul JNI şi NDK", userAnswer: null, answered: false
+            },
+            {
+                question: "Şirurile de caractere transferate folosind apelurile JNI:",
+                options: ["nu pot fi transferate", "trebuie convertite la pointeri de întreg", "pot fi utilizate direct", "trebuie convertite la double", "necesită conversie"],
+                correctAnswer: "necesită conversie", userAnswer: null, answered: false
+            },
+            {
+                question: "Controlul de tip Toolbar:",
+                options: ["poate fi amplasat oriunde în cadrul machetei asociate unei activități", "este poziționat fix, peste controlul de tip ActionBar", "este un control predefinit și include acţiuni standard de sistem", "nu este disponibil în aplicaţiile Android", "este poziționat fix, în locul controlul de tip ActionBar"],
+                correctAnswer: "poate fi amplasat oriunde în cadrul machetei asociate unei activități", userAnswer: null, answered: false
+            },
+            {
+                question: "Modul de poziționare a elementelor într-un control de tip RecyclerView se realizează",
+                options: ["Adapter", "automat", "Layout Manager", "ViewHolder", "ItemDecoration"],
+                correctAnswer: "LayoutManager", userAnswer: null, answered: false
+            },
+            {
+                question: "Pentru transmiterea unei notificări dintr-o aplicație Android către un dispozitiv portabil (Android Wear):",
+                options: ["trebuie utilizate notificările puse la dispoziție pentru Android Wear", "se utilizează mecanismele standard de notificare Android", "se utilizează aplicația Android Wear atunci când este necesar", "se utilizează AlarmManager", "se folosesc serviciile bazate pe Google Cloud Messaging"],
+                correctAnswer: "se utilizează mecanismele standard de notificare Android", userAnswer: null, answered: false
+            },
+            // Întrebări noi din Grile.pdf (Xamarin/MAUI - secțiunea a doua)
+            {
+                question: "La afişarea unei pagini se apelează metoda din ciclul de viață:",
+                options: ["OnStart()", "OnDisplayed()", "OnLoad()", "OnCreated()", "OnAppearing()"],
+                correctAnswer: "OnAppearing()", userAnswer: null, answered: false
+            },
+            {
+                question: "Pentru afişarea unei liste de selecție se utilzează controlul:",
+                options: ["Picker", "Entry", "ComboBox", "List", "Spinner"],
+                correctAnswer: "Picker", userAnswer: null, answered: false
+            },
+            {
+                question: "Pentru neincluderea unei proprietăți în structura unei tabele create folosind SQLiteConnection se utilizează atributul:",
+                options: ["Ignore", "Hide", "Remove", "Transient", "Exclude"],
+                correctAnswer: "Ignore", userAnswer: null, answered: false
+            },
+            {
+                question: "Pentru navigarea ierarhică se utilizează paginile de tip:",
+                options: ["Carousel Page", "TabbedPage", "MainPage", "NavigationPage", "ContentPage"],
+                correctAnswer: "NavigationPage", userAnswer: null, answered: false
+            },
+            {
+                question: "Pentru afişarea textului static se utilizează un control de tip:",
+                options: ["Label", "TextView", "Static", "Editor"],
+                correctAnswer: "Label", userAnswer: null, answered: false
+            },
+            {
+                question: "Celulele sînt utilizate în cadrul controalelor:",
+                options: ["GridLayout", "ListView", "Picker", "TableView", "ListView şi CollectionView"],
+                correctAnswer: "TableView", userAnswer: null, answered: false 
+            },
+            {
+                question: "Introducerea textului pe mai multe linii se realizează cu un control de tip:",
+                options: ["SearchBar", "Label", "Editor", "Picker", "Enttry"],
+                correctAnswer: "Editor", userAnswer: null, answered: false
+            },
+            {
+                question: "Extensiile limbajului XAML sînt identificate în fişier prin intermediul simbolurilor:",
+                options: ["< și >", "[şi]", "{şi}", "", "$/*si*/$"],
+                correctAnswer: "{şi}", userAnswer: null, answered: false
+            },
+            {
+                question: "Pentru referirea unui obiect sursă din cod, atunci când se utilizează legarea dinamică, se folosește proprietatea:",
+                options: ["x:Reference", "BindingContext", "Binding", "Path"],
+                correctAnswer: "Binding", userAnswer: null, answered: false
+            },
+            {
+                question: "Containerul ... include o proprietate pentru umbre pe margini:",
+                options: ["StackLayout", "RelativeLayout", "Frame", "Grid", "ScrollView"],
+                correctAnswer: "Frame", userAnswer: null, answered: false
+            },
+            {
+                question: "Pentru obţinerea rapidă a conținutului unui fişier text se utilizează metoda:",
+                options: ["GetStreamAsync()", "GetTextAsync()", "GetByteArrayAsync()", "GetStringAsync()", "GetPageAsync()"],
+                correctAnswer: "GetStringAsync()", userAnswer: null, answered: false
+            },
+            {
+                question: "În vederea utilizării de meniuri laterale derulante într-o aplicație, componenta de tip Shell va include un element:",
+                options: ["Tab", "TabBar", "ShellContent", "FlyoutItem"],
+                correctAnswer: "FlyoutItem", userAnswer: null, answered: false
+            },
+            {
+                question: "Codul asociat unui fişier XAML este disponibil într-un fişier cu extensia:",
+                options: ["cs", "cpp", "c#", "vb", "sharp"],
+                correctAnswer: "cs", userAnswer: null, answered: false
+            },
+            {
+                question: "ContentPage se utilizează pentru:",
+                options: ["afişarea unui număr nelimitat de componente", "afişarea a maxim trei componente", "afişarea a maxim patru componente", "afişarea unei singure componente", "afişarea a maxim două componente"],
+                correctAnswer: "afişarea unei singure componente", userAnswer: null, answered: false
+            },
+            // Întrebări noi din Grile.pdf (Pag 18-19, lista ne-numerotată)
+             {
+                question: "Afişarea unei opțiuni de meniu pe bara de navigare necesită iniţializarea proprietăţii Order cu valoarea:",
+                options: ["Primary", "Secondary", "Tertiary", "Zero", "First"],
+                correctAnswer: "Primary", userAnswer: null, answered: false
+            },
+            {
+                question: "Valoarea unui control de tip Editor sau Entry se obține cu proprietatea:",
+                options: ["Value", "Edit", "Title", "Name", "Text"],
+                correctAnswer: "Text", userAnswer: null, answered: false
+            },
+            {
+                question: "Pentru schimbarea numelui unei proprietăți în baza de date se utilizează atributul:",
+                options: ["Name", "Except", "Column", "Table", "Row"],
+                correctAnswer: "Column", userAnswer: null, answered: false
+            },
+            {
+                question: "Afişarea unei ferestre de dialog cu o listă de opțiuni se realizează cu metoda:",
+                options: ["DisplayActionSheet", "DisplayListBox", "Toast", "DisplayAlert", "MessageBox"],
+                correctAnswer: "DisplayActionSheet", userAnswer: null, answered: false
+            },
+            {
+                question: "Obținerea tuturor senzorilor disponibili se utilizează metoda:",
+                options: ["getSensorList() din clasa SensorManager", "getDefaultSensor() din clasa SensorManager", "getSensorList() din clasa Sensor", "getDefaultSensor() din clasa Sensor", "getSensorList() din clasa SensorService"],
+                correctAnswer: "getSensorList() din clasa SensorManager", userAnswer: null, answered: false
+            },
+            // Întrebări noi din Test grilă curs_ Revizuirea încercării.pdf
+            { 
+                question: "Serviciile:",
+                options: ["rulează în firul principal de execuţie", "rulează în paralel cu firul principal de execuție și pot avea interfață grafică", "nu există pe aceasta platformă", "rulează în paralel cu firul principal de execuție și nu au interfață grafică", "rulează în paralel cu firul principal de execuție și au interfață grafică"],
+                correctAnswer: "rulează în paralel cu firul principal de execuție și nu au interfață grafică", userAnswer: null, answered: false
+            },
+            { 
+                question: "Inițializarea unui serviciu de sistem se iniţializează cu metoda:",
+                options: ["startSystemService()", "loadService()", "getService()", "loadSystemService()", "getSystemService()"],
+                correctAnswer: "getSystemService()", userAnswer: null, answered: false
+            },
+            { 
+                question: "Pentru a transmite un obiect de tip Student (id, nume, prenume) între două activități într-un obiect de tip Bundle, clasa trebuie:",
+                options: ["să implementeze interfaţa Parcelable", "să implementeze interfaţa Comparable", "să implementeze interfaţa Serializable", "să implementeze interfața Parcelable sau Serializable", "nu trebuie implementată nici o interfaţă"],
+                correctAnswer: "să implementeze interfața Parcelable sau Serializable", userAnswer: null, answered: false
+            },
+            { 
+                question: "Pentru definirea filtrul de mesaje pentru receptorii statici se foloseşte",
+                options: ["clasa BroadcastFilter", "elementul broadcast-filter", "elementul broadcast-intent", "clasa IntentFilter", "elementul intent-filter"],
+                correctAnswer: "elementul intent-filter", userAnswer: null, answered: false
+            },
+            { 
+                question: "Proprietăţile controalelor unei aplicaţii de tip Widget se accesează prin intermediul clasei:",
+                options: ["Service", "Activity", "ContentProvider", "BroadcastReceiver", "RemoteViews"],
+                correctAnswer: "RemoteViews", userAnswer: null, answered: false
+            },
+            { 
+                question: "O metodă nativă de instanță (nestatică) primește ca parametru un obiect de tip",
+                options: ["jclass", "object", "void", "class", "jobject"],
+                correctAnswer: "jobject", userAnswer: null, answered: false
+            },
+            { 
+                question: "Pentru asocierea conţinutului vizual unei activități se apelează metoda:",
+                options: ["setOrientation()", "onResume()", "setViewOnCreate()", "onDestroy()", "setContentView()"],
+                correctAnswer: "setContentView()", userAnswer: null, answered: false
+            },
+            { 
+                question: "Un control specializat pentru afişare sugestiilor pentru controalele de editare este:",
+                options: ["EditTextHint", "android:hint", "TextHint", "TextInputLayout", "TextViewHint"],
+                correctAnswer: "TextInputLayout", userAnswer: null, answered: false
             }
         ];
 
         let currentQuestionIndex = 0;
         const quizContainer = document.getElementById('quiz-container');
+        const navigationButtons = document.getElementById('navigation-buttons');
         const prevButton = document.getElementById('prev-button');
         const nextButton = document.getElementById('next-button');
         const resultContainer = document.getElementById('result-container');
+        const showAllButton = document.getElementById('show-all-button');
+        const backToQuizButton = document.getElementById('back-to-quiz-button');
+        
+        let quizWasShowingResults = false; // Flag to track if results were the last shown view
 
         // Funcție pentru a amesteca un array (Fisher-Yates shuffle)
         function shuffleArray(array) {
@@ -410,9 +607,16 @@
         shuffleArray(quizData);
 
         function displayQuestion() {
+            quizWasShowingResults = false;
             const currentQuestion = quizData[currentQuestionIndex];
             quizContainer.innerHTML = ''; 
+            quizContainer.classList.remove('all-questions-list'); // Remove class if it was there
             resultContainer.textContent = ''; 
+
+            navigationButtons.style.display = 'flex';
+            showAllButton.style.display = 'inline-block'; // Ensure it's inline-block or block as per its original style
+            backToQuizButton.style.display = 'none';
+
 
             const questionElement = document.createElement('div');
             questionElement.className = 'mb-6';
@@ -476,8 +680,13 @@
         }
         
         function showResults() {
+            quizWasShowingResults = true;
             quizContainer.innerHTML = ''; 
-            document.getElementById('navigation-buttons').style.display = 'none'; 
+            quizContainer.classList.remove('all-questions-list');
+            navigationButtons.style.display = 'none'; 
+            showAllButton.style.display = 'inline-block'; // Ensure it's inline-block or block
+            backToQuizButton.style.display = 'none';
+
 
             let score = 0;
             quizData.forEach(q => {
@@ -489,7 +698,7 @@
             resultContainer.innerHTML = `Ai răspuns corect la ${score} din ${quizData.length} întrebări.`;
 
             const summaryElement = document.createElement('div');
-            summaryElement.className = 'mt-6 space-y-4';
+            summaryElement.className = 'mt-6 space-y-4 all-questions-list'; // Add scroll to summary too
             quizData.forEach((q, index) => {
                 const questionSummary = document.createElement('div');
                 questionSummary.className = 'p-4 rounded-lg shadow';
@@ -503,8 +712,60 @@
                 `;
                 summaryElement.appendChild(questionSummary);
             });
-            quizContainer.appendChild(summaryElement);
+            quizContainer.appendChild(summaryElement); // Append summary to quizContainer
         }
+
+        showAllButton.addEventListener('click', () => {
+            quizContainer.innerHTML = ''; // Clear current question or results
+            quizContainer.classList.add('all-questions-list'); // Add class for scrolling
+            navigationButtons.style.display = 'none'; // Hide Prev/Next
+            resultContainer.innerHTML = ''; // Clear results if any
+            showAllButton.style.display = 'none'; // Hide "Show All" button
+            backToQuizButton.style.display = 'inline-block'; // Show "Back to Quiz" button
+
+            const allQuestionsView = document.createElement('div');
+            allQuestionsView.className = 'space-y-6';
+
+            // Use the original quizData for display, not a shuffled one if you want consistent order for "show all"
+            // For now, it uses the shuffled quizData
+            quizData.forEach((questionData, index) => {
+                const questionBlock = document.createElement('div');
+                questionBlock.className = 'p-4 rounded-lg shadow bg-gray-50';
+                
+                const questionText = document.createElement('p');
+                questionText.className = 'text-md font-semibold text-gray-700 mb-2';
+                questionText.textContent = `${index + 1}. ${questionData.question}`; // Using index from shuffled array
+                questionBlock.appendChild(questionText);
+
+                const optionsList = document.createElement('ul');
+                optionsList.className = 'list-disc pl-5 space-y-1 text-sm';
+                questionData.options.forEach(option => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = option;
+                    if (option === questionData.correctAnswer) {
+                        listItem.classList.add('text-green-600', 'font-bold');
+                    } else {
+                        listItem.classList.add('text-gray-600');
+                    }
+                    optionsList.appendChild(listItem);
+                });
+                questionBlock.appendChild(optionsList);
+                allQuestionsView.appendChild(questionBlock);
+            });
+            quizContainer.appendChild(allQuestionsView);
+        });
+
+        backToQuizButton.addEventListener('click', () => {
+            quizContainer.innerHTML = '';
+            quizContainer.classList.remove('all-questions-list');
+            // Button visibility will be handled by displayQuestion or showResults
+            if (quizWasShowingResults) {
+                showResults(); 
+            } else {
+                displayQuestion(); 
+            }
+        });
+
 
         prevButton.addEventListener('click', () => {
             if (currentQuestionIndex > 0) {
@@ -515,8 +776,13 @@
 
         nextButton.addEventListener('click', () => {
             if (currentQuestionIndex < quizData.length - 1) {
-                currentQuestionIndex++;
-                displayQuestion();
+                if (quizData[currentQuestionIndex].answered) { // Allow next only if current is answered
+                    currentQuestionIndex++;
+                    displayQuestion();
+                } else {
+                    // Optionally, show a message that the user needs to answer first
+                    // For now, just don't advance
+                }
             } else {
                  if (quizData.every(q => q.answered)) {
                     showResults();
@@ -524,6 +790,7 @@
             }
         });
 
+        // Afișează prima întrebare la încărcarea paginii
         displayQuestion();
     </script>
 
