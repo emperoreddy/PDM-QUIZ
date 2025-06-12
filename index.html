@@ -1,367 +1,526 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Interactiv - Răspuns Multiplu</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .correct-answer-display {
-            background-color: #d4edda; /* Verde deschis */
-            border-left: 5px solid #28a745;
-        }
-        .option-label.selected {
-            background-color: #cfe2ff;
-            border-color: #0d6efd;
-        }
-        .option-label.correct {
-            background-color: #d1e7dd;
-            border-color: #198754;
-        }
-        .option-label.incorrect {
-            background-color: #f8d7da;
-            border-color: #dc3545;
-        }
-    </style>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Quiz Interactiv - Baze de Date</title>
+   <script src="https://cdn.tailwindcss.com"></script>
+   <style>
+       body {
+           font-family: 'Inter', sans-serif;
+       }
+       .option-label {
+           transition: background-color 0.2s, border-color 0.2s;
+       }
+       .option-label.selected {
+           background-color: #cfe2ff; /* Bootstrap's primary-subtle */
+           border-color: #9ec5fe;
+       }
+       .option-label.correct {
+           background-color: #d1e7dd !important; /* Bootstrap's success-subtle */
+           border-color: #a3cfbb !important;
+           color: #0a3622 !important;
+       }
+       .option-label.incorrect {
+           background-color: #f8d7da !important; /* Bootstrap's danger-subtle */
+           border-color: #f1aeb5 !important;
+           color: #58151c !important;
+       }
+   </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
 
-    <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-3xl">
-        <h1 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-6">Test Grilă - Baze de Date</h1>
-        
-        <div id="quiz-container">
-            <!-- Întrebările vor fi generate aici de JavaScript -->
-        </div>
+   <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-3xl">
+       <h1 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-6">Test Grilă - Baze de Date & Python</h1>
+       
+       <div id="quiz-container">
+           <!-- Întrebările vor fi generate aici de JavaScript -->
+       </div>
 
-        <div id="navigation-buttons" class="mt-8 flex justify-between">
-            <button id="prev-button" class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:opacity-50" disabled>
-                Anterior
-            </button>
-            <button id="next-button" class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-300">
-                Următor
-            </button>
-        </div>
-        <div id="result-container" class="mt-6 text-center text-xl font-semibold text-gray-700"></div>
-    </div>
+       <div id="navigation-buttons" class="mt-8 flex justify-between">
+           <button id="prev-button" class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:opacity-50" disabled>
+               Anterior
+           </button>
+           <button id="next-button" class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-300">
+               Următor
+           </button>
+       </div>
+       <div id="result-container" class="mt-6 text-center text-xl font-semibold text-gray-700"></div>
+   </div>
 
-    <script>
-        // Datele pentru quiz extrase și verificate din "Grile MBD_merged.pdf"
-        const quizData = [
-            {
-                question: "Algoritmul NESTED LOOP JOINS:",
-                options: [
-                    "Este aplicat doar pe tabele indexate",
-                    "Se poate utiliza prin specificarea directive USE_NESTED",
-                    "Conduce la marirea tipului de raspuns prin parcurgeri imbricate",
-                    "Este aplicat numai pe jonctiuni intre doua tabele",
-                    "Se poate utiliza prin specificarea directive USE_NL"
-                ],
-                correctAnswers: ["Se poate utiliza prin specificarea directive USE_NL", "Conduce la marirea tipului de raspuns prin parcurgeri imbricate"]
-            },
-            {
-                question: "Printre etapele parcurse in lucrarea volumelor mari de date se regasesc:",
-                options: [
-                    "Transformarea variabilelor categoriale",
-                    "Stocarea datelor in baze de date relationale",
-                    "Reducerea volumului datelor prelucrate",
-                    "Tratarea valorilor lipsa"
-                ],
-                correctAnswers: ["Transformarea variabilelor categoriale", "Reducerea volumului datelor prelucrate", "Tratarea valorilor lipsa"]
-            },
-            {
-                question: "In MongoDB:",
-                options: [
-                    "Pentru agregarea datelor se utilizeaza metoda aggregate()",
-                    "Datele sunt organizate sub forma de cheie-valoare",
-                    "Pentru regasirea datelor se utilizeaza find(), projection() si sort()",
-                    "In cazul agregarilor criteriile de colectie se precieaza in clauza find()"
-                ],
-                correctAnswers: ["Pentru agregarea datelor se utilizeaza metoda aggregate()", "Pentru regasirea datelor se utilizeaza find(), projection() si sort()"]
-            },
-            {
-                question: "Bazele de date NoSQL:",
-                options: [
-                    "Stocheaza date nestructurate cu schema normalizata",
-                    "Pot fi organizate sub forma de cheie valoare",
-                    "Nu ofera posibilitatea de a replica si distribui datele pe mai multe servere",
-                    "Implementeaza complet modelul ACID",
-                    "Pot fi scalate pe orizontal pe mai multe servere"
-                ],
-                correctAnswers: ["Pot fi organizate sub forma de cheie valoare", "Pot fi scalate pe orizontal pe mai multe servere"]
-            },
-            {
-                question: "Metodele de analiza perspectiva:",
-                options: [
-                    "Presupun aplicarea metodelor matematice si computationale pentru determinarea unor optiuni de decizie",
-                    "Utilizeaza preponderant algoritmi de tip machine Learning",
-                    "Sunt utilizate pentru a prezice tendintele si tiparele de comportament",
-                    "Furnizeaza actiunile necesare pentru a obtine rezultatele previzibile, cat si efectele si implicatiile fiecarei optiuni decizionale"
-                ],
-                correctAnswers: ["Utilizeaza preponderant algoritmi de tip machine Learning", "Sunt utilizate pentru a prezice tendintele si tiparele de comportament"]
-            },
-            {
-                question: "Tehnica de partitionare:",
-                options: [
-                    "Partitiile nu trebuie specificate in momentul in care este create tabela",
-                    "Este o tehnica de grupare fizica a doua sau mai multe tabele, relative la una sau mai multe coloane",
-                    "Inregistrarile noi sunt repartizate in partitia de care apartin prin specificarea clauzei partition",
-                    "Este utilizta pentru gruparea logica a valorilor dintr-o anumita coloana dintr-o tabela",
-                    "In cazul opartitiilor de tip List se utilizeaza algoritmul hash pentru repartizare"
-                ],
-                correctAnswers: ["Inregistrarile noi sunt repartizate in partitia de care apartin prin specificarea clauzei partition"]
-            },
-            {
-                question: "In cazul optimizarilor SQL:",
-                options: [
-                    "Se determina modul de creare a tabelelor",
-                    "Pentru determinarea costului de executie se iau in considerare operatiile I/O, CPU, memoria necesara",
-                    "Optimizatorul utilizeaza statisticile colectate la nivelul bazei de date pentru construirea planului de executie",
-                    "Se determina planul de executie cu un cost redus",
-                    "Se urmareste construirea partitiilor pentru actualizarea datelor"
-                ],
-                correctAnswers: ["Pentru determinarea costului de executie se iau in considerare operatiile I/O, CPU, memoria necesara", "Optimizatorul utilizeaza statisticile colectate la nivelul bazei de date pentru construirea planului de executie", "Se determina planul de executie cu un cost redus"]
-            },
-            {
-                question: "Tehnica de clusterizare:",
-                options: [
-                    "Necesita suplimentare din partea SGBD pentru administrarea clusterului",
-                    "Este o tehnica de grupare logica a doua sau mai multe tabele, relative la una sau mai multe coloane",
-                    "Reduce costul de executie in cazul jonctiunilor pe cheia clusterului",
-                    "Reduce timpul de actualizare a inregistrarilor",
-                    "Cheia clusterului poate fi schimbata dupa popularea tabelelor"
-                ],
-                correctAnswers: ["Reduce costul de executie in cazul jonctiunilor pe cheia clusterului"]
-            },
-            {
-                question: "Apelul unei functii PL/SQL din Python cu pachetul cx_Oracle se poate realiza:",
-                options: [
-                    "Prin callfunc() sau intr-un select",
-                    "Prin execute_function()",
-                    "Este necesar un cursor si precizarea tipului de data returnat de functie",
-                    "Nu pot fi apelate functii create la nivelul bazei de date",
-                    "Prin metoda execute"
-                ],
-                correctAnswers: ["Prin callfunc() sau intr-un select", "Este necesar un cursor si precizarea tipului de data returnat de functie"]
-            },
-             {
-                question: "In SGBD Oracle instructiunea `select /*USE_MERGE (t ind)*/ t.id_client, t.nume_client from t_clienti t, t_comenzi ind;`",
-                options: [
-                    "Permite utilizarea indexului ind pe tabela t_clienti",
-                    "Va apare o eroare",
-                    "Reprezinta un comentariu",
-                    "Realizeaza o jonctiune de egalitate prin aplicarea algoritmului SORT MERGE",
-                    "Realizeaza un produs cartezian prin aplicarea algoritmului SORT MERGE"
-                ],
-                correctAnswers: ["Realizeaza un produs cartezian prin aplicarea algoritmului SORT MERGE"]
-            },
-            {
-                question: "Metodele de analiza descriptiva:",
-                options: [
-                    "Se aplica de regula pe date prelucrate si structurate",
-                    "Identifica principalele puncte slabe/forte si cauzele care le genereaza",
-                    "Permit analiza evenimentelor istorice prin metrici, indicatori cheie de performanta (KPI), rapoarte integrate in tablouri de bord (dashboard)",
-                    "Ofera o retrospectiva unica asupra datelor istorice"
-                ],
-                correctAnswers: ["Se aplica de regula pe date prelucrate si structurate", "Permit analiza evenimentelor istorice prin metrici, indicatori cheie de performanta (KPI), rapoarte integrate in tablouri de bord (dashboard)"]
-            },
-            {
-                question: "Optiunea `indicator` a jonctiunii in Python (Pandas):",
-                options: [
-                    "Poate avea valoarea Left_only, Right_only, Both",
-                    "Precizeaza coloana pe care se realizeaza jonctiunea",
-                    "Indica tipul de jonctiune",
-                    "Indica din ce set de date provin valorile inregistrarilor",
-                    "Poate avea valoarea True, False, Both"
-                ],
-                correctAnswers: ["Poate avea valoarea Left_only, Right_only, Both", "Indica din ce set de date provin valorile inregistrarilor"]
-            },
-            {
-                question: "Secventa `result.groupby(['ID_CLIENT']) ['VALOARE_DAUNA'].sum().nlargest (5)`:",
-                options: [
-                    "Grupeaza dupa id_client si insumeaza valoarea daunelor pentru primii 5 clienti care au id-urile cele mai mari",
-                    "Grupeaza dupa id_client si insumeaza valoarea daunelor pentru primii 5 clienti care au valoarea insumata a daunelor cea mai mare",
-                    "Genereaza o eroare deoarece groupby se utilizeaza atunci cand sunt cel putin doua coloane care necesita grupare",
-                    "Genereaza o eroare deoarece lipseste agg",
-                    "Grupeaza dupa id_client si insumeaza valoarea daunelor pentru cele mai mari 5 daune ale clientului respectiv"
-                ],
-                correctAnswers: ["Grupeaza dupa id_client si insumeaza valoarea daunelor pentru primii 5 clienti care au valoarea insumata a daunelor cea mai mare"]
-            },
-            {
-                question: "Optiunea FLASHBACK din Oracle permite:",
-                options: [
-                    "Realizeaza copii ale bazei de date la intervale de timp regulate",
-                    "Recuperarea unor inregistrari pe baza valorilor anterioare prin precizarea momentului de timp",
-                    "Recuperarea obiectelor sterse",
-                    "Vizualizarea tranzactiilor successive",
-                    "Recuperarea tabelelor sterse"
-                ],
-                correctAnswers: ["Recuperarea unor inregistrari pe baza valorilor anterioare prin precizarea momentului de timp", "Recuperarea tabelelor sterse", "Recuperarea obiectelor sterse"]
-            }
-        ];
-        
-        // Adaugă proprietățile necesare pentru starea quiz-ului
-        quizData.forEach(q => {
-            q.userAnswers = [];
-            q.answered = false;
-        });
+   <script>
+       // Datele pentru quiz extrase și verificate din fișierul text
+       const quizData = [
+           {
+               question: "Secventa `import cx_Oracle; ... cursor.execute(statement, p_prof = v_prof); ... connection.close()`:",
+               options: [
+                   "tranzactia este salvata automat la inchiderea",
+                   "actualizeaza clientii cu profesia precizata prin parametrul p_prof",
+                   "in baza de date nu se vor salva actualizarile",
+                   "este eronata deoarece parametrul p_prof trebuie incadrat intre ' '",
+                   "nu va actualiza nicio inregistrare deoarece in operatorul LIKE parametrul trebuie sa contina %"
+               ],
+               correctAnswers: ["actualizeaza clientii cu profesia precizata prin parametrul p_prof", "in baza de date nu se vor salva actualizarile", "nu va actualiza nicio inregistrare deoarece in operatorul LIKE parametrul trebuie sa contina %"]
+           },
+           {
+               question: "Sa se selecteze variantele corecte de raspuns in ceea ce priveste dataframe.pivot:",
+               options: [
+                   "nu permite utilizarea functiilor de grup",
+                   "pivoteaza dupa o singura coloana",
+                   "nu pot fi prelucrate seturi cu pivot dupa melt",
+                   "este similar cu transpose",
+                   "poate pivota dupa mai multe coloane si permite utilizarea functiilor de grup"
+               ],
+               correctAnswers: ["nu permite utilizarea functiilor de grup", "pivoteaza dupa o singura coloana"]
+           },
+           {
+               question: "Clusterizarea (in Oracle):",
+               options: [
+                   "reprezinta tehnica de grupare logica a doua sau mai mute coloane pentru regasirea rapida a datelor in cazul jonctiunilor",
+                   "reprezinta tehnica de grupare fizică a doua sau mai multe tabele pentru regasirea rapida a datelor in cazul jonctiunilor",
+                   "nu este recomandata in cazul jonctiunilor deoarece creste timpul de access",
+                   "este recomandata in cazul actualizarilor frecvente pentru scaderea timpului de procesare",
+                   "se utilizeaza in operatiile de agregare a datelor pe o singura tabela"
+               ],
+               correctAnswers: ["reprezinta tehnica de grupare fizică a doua sau mai multe tabele pentru regasirea rapida a datelor in cazul jonctiunilor"]
+           },
+           {
+               question: "System Global Area (SGA) contine următoarele sub-zone de memorie:",
+               options: [
+                   "Library Cache, Redo Log Buffer, Shared Pool, Large Pool, Files Pool, Java Pool;",
+                   "Database Buffer Cache, Redo Log Buffer, Shared Pool, Large Pool, Streams Pool, Java Pool",
+                   "Database Buffer Cache, Process Pool, System Pool, Large Pool, Shared Pool, Java Pool",
+                   "Database Buffer Cache, Redo Log Files, Shared Pool, Large Pool, Streams Pool, Java Pool",
+                   "Database Buffer Cache, Redo Log Buffer, Small Pool, Large Pool, Files Pool, Java Pool"
+               ],
+               correctAnswers: ["Database Buffer Cache, Redo Log Buffer, Shared Pool, Large Pool, Streams Pool, Java Pool"]
+           },
+           {
+               question: "Tehnica de partitionare din Oracle Database:",
+               options: [
+                   "Realizeaza o grupare fizica a valorilor dintr-o anumita coloana dintr-o tabela",
+                   "Utilizeaza secventele pentru impartirea seturilor de date",
+                   "Realizeaza o grupare logica a valorilor dintr-o anumita coloana dintr-o tabela",
+                   "In cazul partitiilor de tip Range se utilizeaza algoritmul Hash pentru grupare",
+                   "Grupeaza valorile prin urmatoarele variante: Range, List, Hash"
+               ],
+               correctAnswers: ["Realizeaza o grupare logica a valorilor dintr-o anumita coloana dintr-o tabela", "Grupeaza valorile prin urmatoarele variante: Range, List, Hash"]
+           },
+           {
+               question: "Optiunea FLASHBACK din Oracle permite:",
+               options: [
+                   "Recuperarea tabelelor sterse",
+                   "Vizualizarea tranzactiilor succesive",
+                   "Recuperarea obiectelor sterse",
+                   "Realizeaza copii ale bazei de date la intervale de timp regulate",
+                   "Recuperarea unor inregistrari pe baza valorilor anterioare prin precizarea momentului de timp"
+               ],
+               correctAnswers: ["Recuperarea tabelelor sterse", "Vizualizarea tranzactiilor succesive", "Recuperarea unor inregistrari pe baza valorilor anterioare prin precizarea momentului de timp", "Recuperarea obiectelor sterse"]
+           },
+           {
+               question: "In MongoDB:",
+               options: [
+                   "Datele sunt organizate sub forma de cheie-valoare",
+                   "Pentru agregarea datelor se utilizeaza metoda aggregate()",
+                   "In cazul agregarilor, criteriile de selectie se precizeaza in clauza find{}",
+                   "Agregarea datelor in MongoDB se realizeaza numai cu MapReduce",
+                   "Pentru regasirea datelor se utilizeaza metodele find(), projection() si sort()"
+               ],
+               correctAnswers: ["Pentru agregarea datelor se utilizeaza metoda aggregate()", "Pentru regasirea datelor se utilizeaza metodele find(), projection() si sort()"]
+           },
+           {
+               question: "Optiunea `indicator` a jonctiunii in Python (Pandas):",
+               options: [
+                   "Precizeaza coloana pe care se realizeaza jonctiunea",
+                   "Poate avea valoarea True, False, Both",
+                   "Indica tipul de jonctiune",
+                   "Poate avea valoarea Left_only, Right_only, Both",
+                   "Indica din ce set de date provin valorile inregistrarilor"
+               ],
+               correctAnswers: ["Poate avea valoarea Left_only, Right_only, Both", "Indica din ce set de date provin valorile inregistrarilor"]
+           },
+           {
+               question: "Apelul unei functii PL/SQL din Python cu pachetul cx_Oracle se poate realiza:",
+               options: [
+                   "Prin metoda execute",
+                   "Prin execute_function()",
+                   "Este necesar un cursor si precizarea tipului de data returnat de functie",
+                   "Nu pot fi apelate functii create la nivelul bazei de date",
+                   "Prin callfunc() sau intr-un select"
+               ],
+               correctAnswers: ["Este necesar un cursor si precizarea tipului de data returnat de functie", "Prin callfunc() sau intr-un select"]
+           },
+           {
+               question: "Comanda `print(data.iloc[-1])` va:",
+               options: [
+                   "afisa ultima inregistrare din dataframe",
+                   "genera o eroare deoarece indexul nu poate fi negativ",
+                   "afisa ultima coloana din dataframe;",
+                   "afisa ultima inregistrare si ultima coloana din dataframe",
+                   "genera o eroare deoarece iloc necesita specificarea indexului inregistrarii, respectiv a coloanei selectate"
+               ],
+               correctAnswers: ["afisa ultima inregistrare din dataframe"]
+           },
+           {
+               question: "Secventa `df['PRET_MANOPERA_MAJORAT']=df['PRET_MANOPERA']*1.2` aplicată după un `find()` pe MongoDB:",
+               options: [
+                   "modificarile din dataframe se vor realiza automat si in MongoDB daca se utilizeaza autocommit=True la nivelul cursorului",
+                   "coloana df[‘PRET_MANOPERA_MAJORAT’] nu exista si se va genera o eroare",
+                   "variabila df va avea indexul coloana _id",
+                   "majoreaza cu 20% pretul manoperei pentru autoturismele FORD fabricate dupa 2010 si care au defectiuni la sistemul electric",
+                   "conditiile de regasire din metoda find() nu sunt corecte"
+               ],
+               correctAnswers: ["majoreaza cu 20% pretul manoperei pentru autoturismele FORD fabricate dupa 2010 si care au defectiuni la sistemul electric"]
+           },
+           {
+               question: "Secventa `cursor = collection.find(...); df = list(cursor)`:",
+               options: [
+                   "incarca in variabila df doar marcile cu daune in valoare de 1",
+                   "variabila df este de tip Pandas dataframe",
+                   "nu este corect realizata conexiunea deoarece parametri projection si sort nu sunt corect utilizati",
+                   "realizeaza o conexiune cu MongoDB si incarca in variabila df lista marcilor auto si a daunelor inregistrare de acestea",
+                   "incarca intr-un cursor si apoi intr-o variabila de tip lista id-ul si valoarea daunelor ordonate in functie de marca"
+               ],
+               correctAnswers: ["incarca intr-un cursor si apoi intr-o variabila de tip lista id-ul si valoarea daunelor ordonate in functie de marca"]
+           },
+           {
+               question: "Secventa `df.loc[(df[“AN_FABRICATIE”]>2010)&(df[“MARCA”]==”AUDI”), “PRET_MANOPERA”]=...`",
+               options: [
+                   "Modifica in variabila df pretul manoperei pentru autoturismele Audi fabricate dupa anul 2010 astfel incat aceasta valoare sa fie mai mare cu 100 decat manopera pentru autoturismele Ford inainte de anul 2010",
+                   "Modifica in variabila df pretul manoperei pentru autoturismele Ford fabricate in anul 2010 astfel incat aceasta valoare sa fie mai mare cu 100 decat manopera pentru autoturismele Audi fabricate dupa anul 2010",
+                   "Utilizeaza incorect metoda loc, aceasta trebuie inlocuita cu iloc",
+                   "Coloanele din variabila df sunt de tip dictionar deoarece provin dintr-o sursa json",
+                   "Utilizeaza metoda loc din pachetul pandas"
+               ],
+               correctAnswers: ["Modifica in variabila df pretul manoperei pentru autoturismele Audi fabricate dupa anul 2010 astfel incat aceasta valoare sa fie mai mare cu 100 decat manopera pentru autoturismele Ford inainte de anul 2010", "Utilizeaza metoda loc din pachetul pandas"]
+           },
+           {
+               question: "Secventa `df=pd.concat([df.drop(['_id'],axis=1),df['_id'].apply(pd.Series)],axis=1)` după o agregare MongoDB:",
+               options: [
+                   "contine o eroare in agregarea de tip pipeline deoarece trebuie folosit $count pentru a returna numarul de daune",
+                   "coloana _id este stearsa si la final variabila df este reindexata si va contine doar coloanele VALOARE_DAUNA si NR_DAUNE",
+                   "coloana _id din dataframe este de tip dictionar",
+                   "incarca din cursor in variabila df valoarea totala a daunelor si numarul de daune grupate in functie de marca, model, an fabricatie si componenta",
+                   "la final coloana _id din variabila df este transformata in coloanele MARCA, MODEL, AN_FABRICATIE, COMPONENTA"
+               ],
+               correctAnswers: ["coloana _id din dataframe este de tip dictionar", "la final coloana _id din variabila df este transformata in coloanele MARCA, MODEL, AN_FABRICATIE, COMPONENTA"]
+           },
+           {
+               question: "Secventa `data = data.drop([“Y2001”, “Y2002”, “Y2003”], axis=1)`:",
+               options: [
+                   "Apare o eroare de sintaxa",
+                   "Sterge inregistrarile care contin “Y2001”, “Y2002”, “Y2003”",
+                   "Sterge mai multe coloane",
+                   "Data este un dataframe pandas",
+                   "Sterge prima coloana daca contine “Y2001”, “Y2002”, “Y2003”"
+               ],
+               correctAnswers: ["Sterge mai multe coloane", "Data este un dataframe pandas"]
+           },
+           {
+               question: "Ce va contine `filtered_list` daca: `my_list = [1,2,3,4,5,6,7,8,9,10]; filtered_list = list(filter(lambda x: (x/2 < 3), my_list))`",
+               options: ["[6,7]", "Niciun element", "[8,9,10]", "[1,2,3]", "[1,2,3,4,5]"],
+               correctAnswers: ["[1,2,3,4,5]"]
+           },
+           {
+               question: "Ce va contine `filtered_list` daca: `my_list = [1,2,3,4,5,6,7,8,9,10]; filtered_list = list(filter(lambda x: (x%3 > 1), my_list))`",
+               options: ["[1,4,6]", "[2,5,8]", "[1,2,3]", "[8,9,10]", "[3,6,8]"],
+               correctAnswers: ["[2,5,8]"]
+           },
+           {
+               question: "Ce va afisa secventa `print(data.loc[data['company name'].apply(lambda x: len(x.split(' ')) == 2), 'company name'])`:",
+               options: [
+                   "Primele 2 companii",
+                   "Companiile care apar de 2 ori",
+                   "Companiile care au denumirea formata din 3 cuvinte",
+                   "O eroare",
+                   "Companiile care au denumirea formata din 2 cuvinte"
+               ],
+               correctAnswers: ["Companiile care au denumirea formata din 2 cuvinte"]
+           },
+           {
+               question: "Secventa `data.loc[data[‘VENIT_ANUAL_RON’] > 10000, ‘PRESCORING’] = 7`:",
+               options: [
+                   "Modifica prescoring pentru toate inregistrarile care au venit_anual_ron > 10000",
+                   "Modifica prescoring = 7 pentru toate inregistrarile",
+                   "Apare o eroare de sintaxa",
+                   "Modifica venit_anual_ron pentru toate inregistrarile care au prescoring = 7",
+                   "Afiseaza inregistrarile care indeplinesc cele doua conditii"
+               ],
+               correctAnswers: ["Modifica prescoring pentru toate inregistrarile care au venit_anual_ron > 10000"]
+           },
+           {
+               question: "Secventa `data.set_index('last_name', inplace=False); print(data.loc[['Andrade', 'Veness'], 'city':'email'])` va avea ca rezultat:",
+               options: [
+                   "o eroare deoarece inplace = False",
+                   "afisa inregistrarile pentru Andrade, Veness, toate coloanele intre city si email",
+                   "afisa inregistrarile pentru Andrade, Veness, coloanele city si email",
+                   "toate inregistrarile din data mai putin pe cele pentru Andrade, Veness",
+                   "afisa toate coloanele intre city si email, fara sa tina seama de Andrade, Veness deoarece inplace = False"
+               ],
+               correctAnswers: ["o eroare deoarece inplace = False"]
+           },
+           {
+               question: "Secventa `result.groupby(['ID_CLIENT’])['VALOARE DAUNA'].sum().nlargest(5)`:",
+               options: [
+                   "grupeaza dupa id_client si insumeaza valoarea daunelor pentru primii 5 clienti care au id-urile cele mai mari",
+                   "grupeaza dupa id_client si insumeaza valoarea daunelor pentru cele mai mari 5 daune ale clientului respectiv;",
+                   "genereaza o eroare deoarece lipseste agg",
+                   "grupeaza dupa id_client si insumeaza valoarea daunelor pentru primii 5 clienti care au valoarea insumata a daunelor cea mai mare",
+                   "genereaza o eroare deoarece groupby se utilizeaza atunci cand sunt cel putin doua coloane care necesita grupare"
+               ],
+               correctAnswers: ["grupeaza dupa id_client si insumeaza valoarea daunelor pentru primii 5 clienti care au valoarea insumata a daunelor cea mai mare"]
+           },
+           {
+               question: "Ce face secventa de cod care itereaza printr-o listă de produse și le actualizează prețul?",
+               options: [
+                   "calculeaza valoarea pentru anumite elemente ale listei;",
+                   "adauga elementul 5 al listei care va contine valoarea produselor",
+                   "genereaza o eroare deoarece primul element nu este numeric",
+                   "adauga elementul 4 al listelor pentru anumite produse;",
+                   "calculeaza valoarea pentru fiecare element al listei;"
+               ],
+               correctAnswers: ["calculeaza valoarea pentru anumite elemente ale listei;", "adauga elementul 4 al listelor pentru anumite produse;"]
+           },
+           {
+               question: "Secventa care folosește `cursor.prepare()` și `cursor.execute(None, ...)`:",
+               options: [
+                   "este eronata deoarece parametrul trebuie precizat prin %s",
+                   "cursorul poate fi deschis si cu o altă valoare a parametrului p_val",
+                   "variabila lista_daune este o listă de tupluri",
+                   "contine o eroare deoarece cursorul este deschis cu None",
+                   "incarca din cursor intr-o lista valoarea totala a daunelor grupate in functie de marca daca valoarea este mai mare decât valoarea parametrului p_val"
+               ],
+               correctAnswers: ["cursorul poate fi deschis si cu o altă valoare a parametrului p_val", "variabila lista_daune este o listă de tupluri", "incarca din cursor intr-o lista valoarea totala a daunelor grupate in functie de marca daca valoarea este mai mare decât valoarea parametrului p_val"]
+           },
+           {
+               question: "Secventa `cursor.execute(\"update client set ... 'H%'\")` fără `commit()`:",
+               options: [
+                   "actualizarile sunt salvate automat in baza de date la inchiderea conexiunii",
+                   "contine o eroare - trebuie utilizat executemany() deoarece pot fi mai multi clienti cu litera H;",
+                   "pentru salvarea in baza de date trebuie utilizata comanda cursor.commit()",
+                   "actualizeaza suma solicitata de clientii al caror nume incepe cu litera H;",
+                   "la redeschiderea unui cursor cu SELECT in cadrul conexiunii curente, clientii a caror nume incepe cu litera H vor avea suma solicitata modificată cu valoarea parametrului"
+               ],
+               correctAnswers: ["pentru salvarea in baza de date trebuie utilizata comanda cursor.commit()", "actualizeaza suma solicitata de clientii al caror nume incepe cu litera H;", "la redeschiderea unui cursor cu SELECT in cadrul conexiunii curente, clientii a caror nume incepe cu litera H vor avea suma solicitata modificată cu valoarea parametrului"]
+           },
+           {
+               question: "Secventa `df = pd.read_sql(query, con = connection, params = {‘an’ : an})`:",
+               options: [
+                   "Apare o eroare doarece utilizarea parametrilor nu este permisa in acest caz",
+                   "Apare o eroare doarece lipseste fetchall()",
+                   "Apare o eroare deoarece lpseste metoda execute",
+                   "Este eronata deoarece trebuie utilizat un cursor",
+                   "Din tabela t_clienti_daune datele sunt incarcate intr-un dataframe"
+               ],
+               correctAnswers: ["Din tabela t_clienti_daune datele sunt incarcate intr-un dataframe"]
+           },
+           {
+               question: "Bazele de date NoSQL:",
+               options: [
+                   "Implementeaza complet modelul ACID",
+                   "Pot fi scalate pe orizontal pe mai multe servere",
+                   "Pot fi organizate sub forma de cheie valoare",
+                   "Stocheaza date nestructurate cu schema normalizata",
+                   "Nu ofera posibilitatea de a replica si distribui datele pe mai multe servere"
+               ],
+               correctAnswers: ["Pot fi scalate pe orizontal pe mai multe servere", "Pot fi organizate sub forma de cheie valoare"]
+           },
+           {
+               question: "Metodele de analiza descriptiva:",
+               options: [
+                   "Se aplica de regula pe date prelucrate si structurate",
+                   "Identifica principalele puncte slabe/forte si cauzele care le genereaza",
+                   "Permit analiza evenimentelor istorice prin metrici, indicatori cheie de performanta (KPI), rapoarte integrate in tablouri de bord (dashboard)",
+                   "Ofera o retrospectiva unica asupra datelor istorice"
+               ],
+               correctAnswers: ["Se aplica de regula pe date prelucrate si structurate", "Permit analiza evenimentelor istorice prin metrici, indicatori cheie de performanta (KPI), rapoarte integrate in tablouri de bord (dashboard)"]
+           },
+           {
+               question: "Metodele de analiza perspectiva:",
+               options: [
+                   "Presupun aplicarea metodelor matematice si computationale pentru determinarea unor optiuni de decizie",
+                   "Utilizeaza preponderant algoritmi de tip machine Learning",
+                   "Sunt utilizate pentru a prezice tendintele si tiparele de comportament",
+                   "Furnizeaza actiunile necesare pentru a obtine rezultatele previzibile, cat si efectele si implicatiile fiecarei optiuni decizionale"
+               ],
+               correctAnswers: ["Utilizeaza preponderant algoritmi de tip machine Learning", "Sunt utilizate pentru a prezice tendintele si tiparele de comportament"]
+           },
+           {
+               question: "In cazul optimizarilor SQL:",
+               options: [
+                   "Se determina modul de creare a tabelelor",
+                   "Pentru determinarea costului de executie se iau in considerare operatiile I/O, CPU, memoria necesara",
+                   "Optimizatorul utilizeaza statisticile colectate la nivelul bazei de date pentru construirea planului de executie",
+                   "Se determina planul de executie cu un cost redus",
+                   "Se urmareste construirea partitiilor pentru actualizarea datelor"
+               ],
+               correctAnswers: ["Pentru determinarea costului de executie se iau in considerare operatiile I/O, CPU, memoria necesara", "Optimizatorul utilizeaza statisticile colectate la nivelul bazei de date pentru construirea planului de executie", "Se determina planul de executie cu un cost redus"]
+           },
+           {
+               question: "Secventa `print(df.describe())`:",
+               options: [
+                   "Calculeaza statistici descriptive in functie de tipul coloanelor",
+                   "Genereaza o eroare deoarece sintaxa este gresita",
+                   "Arata numarul de linii si coloane a setului de date",
+                   "Calculeaza statistici descriptive numai pentru coloanele de tip numeric",
+                   "Arata primele 5 inregistrari din setul de date pentru coloanele specificate in usecols"
+               ],
+               correctAnswers: ["Calculeaza statistici descriptive numai pentru coloanele de tip numeric"]
+           },
+           {
+               question: "Secventa care sortează o listă de produse:",
+               options: [
+                   "Genereaza o eroare",
+                   "Afisarea se realizeaza ordonat crescator dupa valoare, apoi dupa denumirea produsului",
+                   "Afisarea se realizeaza ordonat crescator dupa denumirea produsului, apoi dupa valoare",
+                   "Afisarea se realizeaza ordonat descrescator dupa denumirea produsului, apoi dupa cantitate",
+                   "Afisarea se realizeaza ordonat crescator dupa valoare, apoi dupa cantitate"
+               ],
+               correctAnswers: ["Afisarea se realizeaza ordonat crescator dupa denumirea produsului, apoi dupa valoare"]
+           }
+       ];
+       
+       // Adaugă proprietățile necesare pentru starea quiz-ului
+       quizData.forEach(q => {
+           q.userAnswers = [];
+           q.answered = false;
+       });
 
-        let currentQuestionIndex = 0;
-        const quizContainer = document.getElementById('quiz-container');
-        const navigationButtons = document.getElementById('navigation-buttons');
-        const prevButton = document.getElementById('prev-button');
-        const nextButton = document.getElementById('next-button');
-        const resultContainer = document.getElementById('result-container');
+       let currentQuestionIndex = 0;
+       const quizContainer = document.getElementById('quiz-container');
+       const navigationButtons = document.getElementById('navigation-buttons');
+       const prevButton = document.getElementById('prev-button');
+       const nextButton = document.getElementById('next-button');
+       const resultContainer = document.getElementById('result-container');
 
-        function displayQuestion() {
-            const currentQuestion = quizData[currentQuestionIndex];
-            quizContainer.innerHTML = '';
-            resultContainer.innerHTML = '';
-            navigationButtons.style.display = 'flex';
+       function displayQuestion() {
+           const currentQuestion = quizData[currentQuestionIndex];
+           quizContainer.innerHTML = '';
+           resultContainer.innerHTML = '';
+           navigationButtons.style.display = 'flex';
 
-            const questionElement = document.createElement('div');
-            questionElement.className = 'mb-6';
-            questionElement.innerHTML = `<p class="text-lg font-semibold text-gray-700">${currentQuestionIndex + 1}. ${currentQuestion.question}</p>`;
-            if (!currentQuestion.answered) {
-                 questionElement.innerHTML += `<p class="text-sm text-gray-500 mt-1">Selectați una sau mai multe opțiuni corecte.</p>`;
-            }
-            quizContainer.appendChild(questionElement);
+           const questionElement = document.createElement('div');
+           questionElement.className = 'mb-6';
+           questionElement.innerHTML = `<p class="text-lg font-semibold text-gray-700">${currentQuestionIndex + 1}. ${currentQuestion.question}</p>`;
+           if (!currentQuestion.answered) {
+                questionElement.innerHTML += `<p class="text-sm text-gray-500 mt-1">Selectați una sau mai multe opțiuni corecte.</p>`;
+           }
+           quizContainer.appendChild(questionElement);
 
-            const optionsContainer = document.createElement('div');
-            optionsContainer.className = 'space-y-3';
-            quizContainer.appendChild(optionsContainer);
+           const optionsContainer = document.createElement('div');
+           optionsContainer.className = 'space-y-3';
+           quizContainer.appendChild(optionsContainer);
 
-            currentQuestion.options.forEach((option, index) => {
-                const optionId = `q${currentQuestionIndex}_option${index}`;
-                const wrapper = document.createElement('div');
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.id = optionId;
-                checkbox.value = option;
-                checkbox.className = 'hidden';
+           currentQuestion.options.forEach((option, index) => {
+               const optionId = `q${currentQuestionIndex}_option${index}`;
+               const wrapper = document.createElement('div');
+               const checkbox = document.createElement('input');
+               checkbox.type = 'checkbox';
+               checkbox.id = optionId;
+               checkbox.value = option;
+               checkbox.className = 'hidden peer';
 
-                const label = document.createElement('label');
-                label.htmlFor = optionId;
-                label.textContent = option;
-                label.className = 'option-label block w-full text-left bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-4 rounded-lg border-2 border-transparent cursor-pointer transition-all';
-                
-                if (currentQuestion.userAnswers.includes(option)) {
-                    label.classList.add('selected');
-                    checkbox.checked = true;
-                }
+               const label = document.createElement('label');
+               label.htmlFor = optionId;
+               label.textContent = option;
+               label.className = 'option-label block w-full text-left bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-4 rounded-lg border-2 border-transparent peer-checked:border-blue-500 peer-checked:bg-blue-100 cursor-pointer transition-all';
+               
+               if (currentQuestion.answered) {
+                   checkbox.disabled = true;
+                   // Stilizează răspunsurile după ce s-a verificat
+                   if (currentQuestion.correctAnswers.includes(option)) {
+                       label.classList.add('correct');
+                   }
+                   if (currentQuestion.userAnswers.includes(option) && !currentQuestion.correctAnswers.includes(option)) {
+                       label.classList.add('incorrect');
+                   }
+                   // Scoate stilul de selectie dupa ce s-a raspuns
+                   label.classList.remove('peer-checked:border-blue-500', 'peer-checked:bg-blue-100');
+               }
 
-                checkbox.onchange = () => {
-                    label.classList.toggle('selected');
-                    updateUserAnswers(option);
-                };
-                
-                if (currentQuestion.answered) {
-                    checkbox.disabled = true;
-                    // Stilizează răspunsurile după ce s-a verificat
-                    if (currentQuestion.correctAnswers.includes(option)) {
-                        label.classList.add('correct');
-                    }
-                    if (currentQuestion.userAnswers.includes(option) && !currentQuestion.correctAnswers.includes(option)) {
-                        label.classList.add('incorrect');
-                    }
-                }
+               wrapper.appendChild(checkbox);
+               wrapper.appendChild(label);
+               optionsContainer.appendChild(wrapper);
+           });
 
-                wrapper.appendChild(checkbox);
-                wrapper.appendChild(label);
-                optionsContainer.appendChild(wrapper);
-            });
+           if (!currentQuestion.answered) {
+               const checkButton = document.createElement('button');
+               checkButton.id = 'check-answer-button';
+               checkButton.textContent = 'Verifică Răspunsul';
+               checkButton.className = 'mt-6 bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow';
+               checkButton.onclick = checkAnswer;
+               quizContainer.appendChild(checkButton);
+           }
+           
+           updateNavigationButtons();
+       }
 
-            if (!currentQuestion.answered) {
-                const checkButton = document.createElement('button');
-                checkButton.id = 'check-answer-button';
-                checkButton.textContent = 'Verifică Răspunsul';
-                checkButton.className = 'mt-6 bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow';
-                checkButton.onclick = checkAnswer;
-                quizContainer.appendChild(checkButton);
-            }
-            
-            updateNavigationButtons();
-        }
+       function checkAnswer() {
+           const currentQuestion = quizData[currentQuestionIndex];
+           const selectedOptions = Array.from(quizContainer.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+           currentQuestion.userAnswers = selectedOptions;
+           currentQuestion.answered = true;
+           
+           displayQuestion();
+           document.getElementById('check-answer-button')?.remove();
+           
+           updateNavigationButtons();
+       }
 
-        function updateUserAnswers(option) {
-            const currentQuestion = quizData[currentQuestionIndex];
-            const answerIndex = currentQuestion.userAnswers.indexOf(option);
-            if (answerIndex > -1) {
-                currentQuestion.userAnswers.splice(answerIndex, 1);
-            } else {
-                currentQuestion.userAnswers.push(option);
-            }
-        }
-        
-        function checkAnswer() {
-            const currentQuestion = quizData[currentQuestionIndex];
-            currentQuestion.answered = true;
-            
-            // Re-afișează întrebarea pentru a arăta stilurile corect/incorect
-            displayQuestion(); 
-            // Elimină butonul "Verifică" care e recreat în displayQuestion
-            document.getElementById('check-answer-button')?.remove();
-            
-            updateNavigationButtons();
-        }
+       function updateNavigationButtons() {
+           prevButton.disabled = currentQuestionIndex === 0;
+           if (currentQuestionIndex === quizData.length - 1) {
+               nextButton.textContent = 'Vezi Rezultatul';
+               nextButton.disabled = !quizData.every(q => q.answered);
+           } else {
+               nextButton.textContent = 'Următor';
+               nextButton.disabled = false;
+           }
+       }
 
-        function updateNavigationButtons() {
-            prevButton.disabled = currentQuestionIndex === 0;
-            if (currentQuestionIndex === quizData.length - 1) {
-                nextButton.textContent = 'Vezi Rezultatul';
-                nextButton.disabled = !quizData.every(q => q.answered);
-            } else {
-                nextButton.textContent = 'Următor';
-                nextButton.disabled = false;
-            }
-        }
+       function showResults() {
+           quizContainer.innerHTML = '';
+           navigationButtons.style.display = 'none';
 
-        function showResults() {
-            quizContainer.innerHTML = '';
-            navigationButtons.style.display = 'none';
+           let score = 0;
+           quizData.forEach(q => {
+               const userAnswersSorted = [...q.userAnswers].sort();
+               const correctAnswersSorted = [...q.correctAnswers].sort();
+               if (JSON.stringify(userAnswersSorted) === JSON.stringify(correctAnswersSorted)) {
+                   score++;
+               }
+           });
 
-            let score = 0;
-            quizData.forEach(q => {
-                const userAnswersSorted = [...q.userAnswers].sort();
-                const correctAnswersSorted = [...q.correctAnswers].sort();
-                if (JSON.stringify(userAnswersSorted) === JSON.stringify(correctAnswersSorted)) {
-                    score++;
-                }
-            });
+           resultContainer.innerHTML = `<h2 class="text-2xl font-bold mb-4">Quiz Finalizat!</h2><p>Ai răspuns corect la ${score} din ${quizData.length} întrebări.</p>`;
+           
+           const restartButton = document.createElement('button');
+           restartButton.textContent = 'Reîncepe Testul';
+           restartButton.className = 'mt-4 bg-indigo-500 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow';
+           restartButton.onclick = () => window.location.reload();
+           resultContainer.appendChild(restartButton);
+       }
 
-            resultContainer.innerHTML = `<h2 class="text-2xl font-bold mb-4">Quiz Finalizat!</h2><p>Ai răspuns corect la ${score} din ${quizData.length} întrebări.</p>`;
-            
-            // Adaugă buton pentru a reîncepe testul
-            const restartButton = document.createElement('button');
-            restartButton.textContent = 'Reîncepe Testul';
-            restartButton.className = 'mt-4 bg-indigo-500 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow';
-            restartButton.onclick = () => window.location.reload();
-            resultContainer.appendChild(restartButton);
-        }
+       prevButton.addEventListener('click', () => {
+           if (currentQuestionIndex > 0) {
+               currentQuestionIndex--;
+               displayQuestion();
+           }
+       });
 
-        prevButton.addEventListener('click', () => {
-            if (currentQuestionIndex > 0) {
-                currentQuestionIndex--;
-                displayQuestion();
-            }
-        });
+       nextButton.addEventListener('click', () => {
+           if (currentQuestionIndex < quizData.length - 1) {
+               currentQuestionIndex++;
+               displayQuestion();
+           } else {
+               if (quizData.every(q => q.answered)) {
+                   showResults();
+               }
+           }
+       });
 
-        nextButton.addEventListener('click', () => {
-            if (currentQuestionIndex < quizData.length - 1) {
-                currentQuestionIndex++;
-                displayQuestion();
-            } else {
-                if (quizData.every(q => q.answered)) {
-                    showResults();
-                }
-            }
-        });
-
-        // Afișează prima întrebare la încărcarea paginii
-        displayQuestion();
-    </script>
+       // Afișează prima întrebare la încărcarea paginii
+       displayQuestion();
+   </script>
 
 </body>
 </html>
